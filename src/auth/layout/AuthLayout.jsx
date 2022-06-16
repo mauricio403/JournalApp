@@ -4,6 +4,7 @@ import React from 'react'
 export const AuthLayout = ({ children, title = '' }) => {
     return (
         <Grid
+        
             container
             spacing={0}
             direction='column'

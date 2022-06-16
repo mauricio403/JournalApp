@@ -1,29 +1,28 @@
 import React, { useMemo } from 'react'
 import { Facebook, Google } from '@mui/icons-material'
 import { Link as RouterLink } from "react-router-dom";
-import { Button, Grid, Link, TextField, Typography } from '@mui/material'
+import { Alert, Button, Grid, Link, TextField, Typography } from '@mui/material'
 import { AuthLayout } from '../layout/AuthLayout';
 import { useForm } from '../../hooks/useForm';
 import { useDispatch, useSelector } from 'react-redux';
-import { checkingAuthentication, startGoogleSignIn } from '../../store/auth/thunks';
+import { startFacebookSignIn, startGoogleSignIn, startLoginWithEmailAndPassword } from '../../store/auth/thunks';
 
 export const LoginPage = () => {
 
   const dispatch = useDispatch();
 
-  const { status } = useSelector(state => state.auth);
+  const { status, errorMessage } = useSelector(state => state.auth);
 
-  const { email, password, onInputChange } = useForm({
-    email: 'mau@mau.com',
-    password: '123456'
+  const { email, password, onInputChange, formState } = useForm({
+    email: '',
+    password: ''
   });
 
   const isAuthenticating = useMemo(() => status === 'checking', [status])
 
   const onSubmit = (event) => {
     event.preventDefault();
-    console.log({ email, password })
-    dispatch(checkingAuthentication())
+    dispatch(startLoginWithEmailAndPassword({ email, password }));
   }
 
   const onGoogleSignIn = () => {
@@ -32,13 +31,13 @@ export const LoginPage = () => {
   }
 
   const onFacebookSignIn = () => {
-    console.log('login con facebook')
+    dispatch(startFacebookSignIn())
   }
 
 
   return (
     <AuthLayout title='Login'>
-      <form onSubmit={onSubmit}>
+      <form onSubmit={onSubmit} className='animate__animated animate__fadeIn animate__faster'>
         <Grid container>
           <Grid item xs={12} sx={{
             mt: 2
@@ -70,6 +69,11 @@ export const LoginPage = () => {
             mb: 2,
             mt: 1
           }} >
+            <Grid item xs={12} display={!!errorMessage ? '' : 'none'}>
+              <Alert severity='error'>
+                {errorMessage}
+              </Alert>
+            </Grid>
 
             <Grid item xs={12} sm={6}>
               <Button
@@ -97,7 +101,7 @@ export const LoginPage = () => {
             </Grid>
             <Grid item xs={12} sm={6}>
               <Button
-                disabled={isAuthenticating}
+                disabled
                 variant='contained'
                 fullWidth
                 onClick={onFacebookSignIn}
@@ -107,6 +111,7 @@ export const LoginPage = () => {
                   ml: 1
                 }} >Facebook</Typography>
               </Button>
+              <Typography>Coming soon...</Typography>
             </Grid>
           </Grid>
 
