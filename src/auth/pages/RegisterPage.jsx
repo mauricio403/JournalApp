@@ -12,6 +12,12 @@ const formValidations = {
   displayName: [(value) => value.length >= 1, 'El nombre es obligatorio!'],
 }
 
+const formData = {
+  email: '',
+  password: '',
+  displayName: '',
+}
+
 export const RegisterPage = () => {
 
   const [formSubmited, setFormSubmited] = useState(false);
@@ -25,11 +31,7 @@ export const RegisterPage = () => {
 
   const { displayName, email, password, onInputChange, formState,
     isFormValid, displayNameValid, emailValid, passwordValid
-  } = useForm({
-    email: '',
-    password: '',
-    displayName: '',
-  }, formValidations);
+  } = useForm(formData, formValidations);
 
 
   const onSubmit = (event) => {
@@ -95,7 +97,7 @@ export const RegisterPage = () => {
             mt: 1
           }} >
 
-            <Grid item xs={12}  display={!!errorMessage ? '': 'none'}>
+            <Grid item xs={12} display={!!errorMessage ? '' : 'none'}>
               <Alert severity='error'>
                 {errorMessage}
               </Alert>
